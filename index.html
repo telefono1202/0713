@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>洞洞板配件挑選</title>
+<style>
+:root {
+  --bg: #f6f4f0;
+  --surface: #ffffff;
+  --text: #24211d;
+  --muted: #736c63;
+  --line: #e4ded5;
+  --accent: #d9542b;
+  --accent-soft: #fbe9e2;
+  --a: #2f7d6d;
+  --a-soft: #e2f1ed;
+  --b: #7a55b8;
+  --b-soft: #eee7f8;
+  --both: #c68a12;
+  --shadow: 0 1px 3px rgba(0,0,0,.06), 0 4px 14px rgba(0,0,0,.05);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #171614; --surface: #22201d; --text: #eeeae4; --muted: #a69e93; --line: #36322d;
+    --accent: #f07a50; --accent-soft: #3a2820; --a: #5cc0a9; --a-soft: #1d332e;
+    --b: #b292e8; --b-soft: #2c2440; --both: #e7b44a; --shadow: none;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #171614; --surface: #22201d; --text: #eeeae4; --muted: #a69e93; --line: #36322d;
+  --accent: #f07a50; --accent-soft: #3a2820; --a: #5cc0a9; --a-soft: #1d332e;
+  --b: #b292e8; --b-soft: #2c2440; --both: #e7b44a; --shadow: none;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+  line-height: 1.5; -webkit-text-size-adjust: 100%;
+}
+.wrap { max-width: 1120px; margin: 0 auto; padding: 0 16px 120px; }
+header { padding: 28px 0 12px; }
+h1 { font-size: 1.6rem; margin: 0 0 4px; }
+.sub { color: var(--muted); margin: 0; font-size: .95rem; }
+.people { display: flex; flex-wrap: wrap; gap: 10px; margin: 16px 0 8px; }
+.people label { display: flex; align-items: center; gap: 6px; font-size: .9rem; color: var(--muted); }
+.people input {
+  width: 8.5em; padding: 6px 10px; border-radius: 8px; border: 1px solid var(--line);
+  background: var(--surface); color: var(--text); font: inherit;
+}
+.dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.dot.a { background: var(--a); } .dot.b { background: var(--b); }
+
+.toolbar {
+  position: sticky; top: 0; z-index: 5; background: var(--bg);
+  padding: 10px 0; display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+  border-bottom: 1px solid var(--line); margin-bottom: 18px;
+}
+.chip {
+  border: 1px solid var(--line); background: var(--surface); color: var(--text);
+  padding: 6px 12px; border-radius: 999px; font: inherit; font-size: .88rem; cursor: pointer;
+}
+.chip[aria-pressed="true"] { background: var(--text); color: var(--bg); border-color: var(--text); }
+.count { color: var(--muted); font-size: .85rem; margin-left: auto; }
+
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 16px; }
+.card {
+  background: var(--surface); border-radius: 14px; overflow: hidden; box-shadow: var(--shadow);
+  border: 2px solid transparent; display: flex; flex-direction: column;
+}
+.card.both { border-color: var(--both); }
+.card.skip { opacity: .5; }
+.card .img {
+  aspect-ratio: 1 / 1; background: #fff; cursor: zoom-in; display: block; width: 100%;
+  border: 0; padding: 0; position: relative;
+}
+.card .img img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.badge {
+  position: absolute; top: 10px; left: 10px; background: var(--both); color: #fff;
+  font-size: .78rem; padding: 2px 9px; border-radius: 999px; font-weight: 600;
+}
+.body { padding: 12px 14px 14px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+.name { font-weight: 700; font-size: 1.05rem; margin: 0; }
+.meta { display: flex; flex-wrap: wrap; gap: 6px; font-size: .8rem; }
+.tag { background: var(--bg); color: var(--muted); padding: 2px 8px; border-radius: 6px; }
+.tag.price { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.desc { font-size: .86rem; color: var(--muted); margin: 0; }
+
+.votes { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: auto; }
+.vote {
+  border: 1.5px solid var(--line); background: transparent; color: var(--text); border-radius: 10px;
+  padding: 8px 6px; font: inherit; font-size: .85rem; cursor: pointer; display: flex;
+  align-items: center; justify-content: center; gap: 6px; min-height: 40px;
+}
+.vote .who { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 6em; }
+.vote.a[data-v="yes"] { background: var(--a-soft); border-color: var(--a); color: var(--a); }
+.vote.b[data-v="yes"] { background: var(--b-soft); border-color: var(--b); color: var(--b); }
+.vote[data-v="no"] { border-style: dashed; color: var(--muted); }
+.opts { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; font-size: .85rem; }
+.opts select, .opts input {
+  padding: 5px 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface);
+  color: var(--text); font: inherit; font-size: .85rem;
+}
+.opts input[type="number"] { width: 4.2em; }
+.note { width: 100%; }
+
+h2 { font-size: 1.15rem; margin: 40px 0 12px; }
+.inspo { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+.inspo figure { margin: 0; background: var(--surface); border-radius: 14px; overflow: hidden; box-shadow: var(--shadow); }
+.inspo button { border: 0; padding: 0; display: block; width: 100%; cursor: zoom-in; background: none; }
+.inspo img { width: 100%; display: block; }
+.inspo figcaption { padding: 10px 14px; font-size: .88rem; color: var(--muted); }
+
+.summary {
+  background: var(--surface); border-radius: 14px; padding: 16px; box-shadow: var(--shadow);
+}
+.summary pre {
+  white-space: pre-wrap; font-family: inherit; font-size: .9rem; margin: 0 0 12px;
+  background: var(--bg); padding: 12px; border-radius: 10px; max-height: 360px; overflow: auto;
+}
+.btns { display: flex; flex-wrap: wrap; gap: 8px; }
+.btn {
+  border: 0; background: var(--accent); color: #fff; padding: 9px 16px; border-radius: 10px;
+  font: inherit; font-size: .9rem; cursor: pointer; font-weight: 600;
+}
+.btn.ghost { background: transparent; color: var(--text); border: 1px solid var(--line); font-weight: 400; }
+.hint { font-size: .8rem; color: var(--muted); margin: 10px 0 0; }
+
+.lightbox {
+  position: fixed; inset: 0; background: rgba(0,0,0,.85); display: none; z-index: 20;
+  align-items: center; justify-content: center; padding: 16px; cursor: zoom-out;
+}
+.lightbox.open { display: flex; }
+.lightbox img { max-width: 100%; max-height: 100%; border-radius: 8px; }
+.toast {
+  position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: var(--text);
+  color: var(--bg); padding: 10px 18px; border-radius: 999px; font-size: .9rem; opacity: 0;
+  transition: opacity .2s; pointer-events: none; z-index: 30;
+}
+.toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>洞洞板配件挑選清單</h1>
+    <p class="sub">兩個人各自點「想要」或「不要」，兩人都想要的會用金框標出來。點圖片可以放大。</p>
+    <div class="people">
+      <label><span class="dot a"></span>第一位 <input id="nameA" maxlength="8"></label>
+      <label><span class="dot b"></span>第二位 <input id="nameB" maxlength="8"></label>
+    </div>
+  </header>
+
+  <div class="toolbar" role="group" aria-label="篩選">
+    <button class="chip" data-filter="all" aria-pressed="true">全部</button>
+    <button class="chip" data-filter="both" aria-pressed="false">兩人都想要</button>
+    <button class="chip" data-filter="any" aria-pressed="false">有人想要</button>
+    <button class="chip" data-filter="pending" aria-pressed="false">還沒決定</button>
+    <span class="count" id="count"></span>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <h2>參考佈置</h2>
+  <div class="inspo">
+    <figure>
+      <button data-zoom="images/inspo-review.jpg"><img src="images/inspo-review.jpg" alt="買家實拍：白色洞洞板搭配大層架與方形盒" loading="lazy"></button>
+      <figcaption>買家實拍：白色洞洞板＋大平架（大層架）、長置物盒、方形盒</figcaption>
+    </figure>
+    <figure>
+      <button data-zoom="images/inspo-overview.jpg"><img src="images/inspo-overview.jpg" alt="賣場情境圖：深灰洞洞板掛滿各式配件" loading="lazy"></button>
+      <figcaption>賣場情境圖：大小掛鉤、圍邊展示架、大小掛籃混搭</figcaption>
+    </figure>
+  </div>
+
+  <h2>挑選結果</h2>
+  <div class="summary">
+    <pre id="summary"></pre>
+    <div class="btns">
+      <button class="btn" id="copyText">複製清單（貼到 LINE）</button>
+      <button class="btn ghost" id="copyLink">複製分享連結</button>
+      <button class="btn ghost" id="reset">全部清除</button>
+    </div>
+    <p class="hint">選擇會自動存在這台裝置上。想讓對方接著選：按「複製分享連結」傳給對方，對方打開後就會看到你的選擇，再接著點他的部分，然後傳回來。</p>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox"><img alt=""></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const PRODUCTS = [
+  { id: "clear-box", name: "透明方形收納盒", img: "images/clear-box.jpg", size: "10 × 5.5 × 10 cm", pack: "1 個裝", colors: ["透明"], price: "$79", desc: "壓克力透明款，放筆、化妝刷、小工具。只有透明款。" },
+  { id: "acrylic-photo-frame", name: "磁吸壓克力相片卡磚", img: "images/acrylic-photo-frame.jpg", size: "9 × 6 cm", pack: "4 個裝", colors: ["透明"], desc: "磁吸展示照片、小卡。下單黑或白都是發透明壓克力。" },
+  { id: "magnetic-clock", name: "磁吸溫度濕度時鐘", img: "images/magnetic-clock.jpg", size: "9.3 × 7.3 cm，厚 1.5 cm", pack: "1 個裝", colors: ["白", "黑"], desc: "顯示時間、溫度、濕度，直接吸在鐵質洞洞板上。" },
+  { id: "magnetic-clip", name: "磁吸夾子", img: "images/magnetic-clip.jpg", size: "4 × 4.5 cm", pack: "2 個裝", colors: ["白", "黑"], desc: "可夾、可掛、可磁吸展示，不用對孔距。" },
+  { id: "small-hanging-basket", name: "鋼質小掛籃", img: "images/small-hanging-basket.jpg", size: "27.5 × 15.7 × 11 cm", pack: "1 個裝", colors: ["白", "黑"], desc: "深籃，放餐具、充電線、零碎雜物。" },
+  { id: "tablet-book-rack", name: "鋼質平板書架", img: "images/tablet-book-rack.jpg", size: "18.5 × 15.8 × 5.2 cm", pack: "1 個裝", colors: ["白", "黑"], desc: "平板、書、砧板、分享器都能放。" },
+  { id: "wire-basket", name: "鋼質收納網籃", img: "images/wire-basket.jpg", size: "25 × 10 × 8 cm", pack: "1 個裝", colors: ["白", "黑"], desc: "放書本、筆記本、小包裝物品。" },
+  { id: "magnetic-hook-rail", name: "鋼質磁吸排鉤", img: "images/magnetic-hook-rail.jpg", size: "18 × 4 × 1 cm", pack: "1 個裝", colors: ["白", "黑"], desc: "8 個小鉤一排，磁吸不用算孔距，掛鑰匙、耳機。" },
+  { id: "rail-shelf", name: "鋼質檔條置物架", img: "images/rail-shelf.jpg", size: "24.5 × 9 × 12 cm", pack: "1 個裝", colors: ["白", "黑"], desc: "有前擋條不易掉落，邊框也能磁吸小物。" },
+  { id: "large-shelf", name: "鋼質大層架（大平架）", img: "images/large-shelf.jpg", size: "23.5 × 9 × 3 cm", pack: "1 個裝", colors: ["白", "黑"], desc: "最基本的平台層板，參考實拍圖就是這款。" },
+  { id: "square-box", name: "鋼質方形盒", img: "images/square-box.jpg", size: "9 × 6 × 11.6 cm（前高 8.7 cm）", pack: "1 個裝", colors: ["白", "黑"], desc: "放筆、剪刀、小瓶罐。" },
+  { id: "long-tray", name: "鋼質長置物盒", img: "images/long-tray.jpg", size: "24 × 9 × 5 cm", pack: "1 個裝", colors: ["白", "黑"], desc: "淺盒，放擺飾、手把、香氛。" },
+  { id: "u-hook", name: "鋼質 U 型掛鉤", img: "images/u-hook.jpg", size: "5.5 × 1.8 × 1 cm", pack: "2 個裝", colors: ["白", "黑"], desc: "小巧掛鉤，收充電線、掛鑰匙。" },
+  { id: "small-hook", name: "鋼質小掛鉤", img: "images/small-hook.jpg", size: "3 × 3 cm 底座，伸出 4 cm", pack: "2 個裝", colors: ["白", "黑"], desc: "L 型長鉤，掛耳機、線材、小包。" }
+];
+
+const KEY = "pegboard-picks-v1";
+let state = { names: { a: "我", b: "同居者" }, picks: {} };
+let filter = "all";
+
+function load() {
+  const fromHash = decodeState(location.hash.slice(1));
+  if (fromHash) { state = fromHash; save(); history.replaceState(null, "", location.pathname); return; }
+  try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && s.picks) state = s; } catch (e) {}
+}
+function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+function pick(id) {
+  if (!state.picks[id]) state.picks[id] = { a: "", b: "", color: "", qty: 1, note: "" };
+  return state.picks[id];
+}
+function encodeState() {
+  const bytes = new TextEncoder().encode(JSON.stringify(state));
+  let bin = ""; bytes.forEach(c => bin += String.fromCharCode(c));
+  return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+function decodeState(s) {
+  if (!s) return null;
+  try {
+    const bin = atob(s.replace(/-/g, "+").replace(/_/g, "/"));
+    const obj = JSON.parse(new TextDecoder().decode(Uint8Array.from(bin, c => c.charCodeAt(0))));
+    return obj && obj.picks ? obj : null;
+  } catch (e) { return null; }
+}
+
+const voteLabel = v => v === "yes" ? "♥ 想要" : v === "no" ? "✕ 不要" : "未選";
+function status(p) {
+  if (p.a === "yes" && p.b === "yes") return "both";
+  if (p.a === "no" && p.b === "no") return "skip";
+  return "";
+}
+function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
+
+function render() {
+  const grid = document.getElementById("grid");
+  let shown = 0;
+  grid.innerHTML = PRODUCTS.map(prod => {
+    const p = pick(prod.id);
+    const st = status(p);
+    const ok = filter === "all" ||
+      (filter === "both" && st === "both") ||
+      (filter === "any" && (p.a === "yes" || p.b === "yes")) ||
+      (filter === "pending" && (!p.a || !p.b));
+    if (!ok) return "";
+    shown++;
+    const colorOpts = prod.colors.length > 1
+      ? `<label>顏色 <select data-k="color" data-id="${prod.id}"><option value="">未定</option>${prod.colors.map(c => `<option${p.color === c ? " selected" : ""}>${c}</option>`).join("")}</select></label>`
+      : `<span class="tag">${prod.colors[0]}</span>`;
+    return `<article class="card ${st}">
+      <button class="img" data-zoom="${prod.img}" aria-label="放大 ${esc(prod.name)}">
+        <img src="${prod.img}" alt="${esc(prod.name)}" loading="lazy">
+        ${st === "both" ? '<span class="badge">兩人都想要</span>' : ""}
+      </button>
+      <div class="body">
+        <h3 class="name">${esc(prod.name)}</h3>
+        <div class="meta">
+          ${prod.price ? `<span class="tag price">${prod.price}</span>` : ""}
+          <span class="tag">${prod.size}</span><span class="tag">${prod.pack}</span>
+        </div>
+        <p class="desc">${esc(prod.desc)}</p>
+        <div class="votes">
+          <button class="vote a" data-id="${prod.id}" data-who="a" data-v="${p.a}"><span class="who">${esc(state.names.a)}</span>${voteLabel(p.a)}</button>
+          <button class="vote b" data-id="${prod.id}" data-who="b" data-v="${p.b}"><span class="who">${esc(state.names.b)}</span>${voteLabel(p.b)}</button>
+        </div>
+        <div class="opts">
+          ${colorOpts}
+          <label>數量 <input type="number" min="1" max="20" value="${p.qty}" data-k="qty" data-id="${prod.id}"></label>
+        </div>
+        <input class="note" type="text" placeholder="備註（例：放玄關、要放耳機）" value="${esc(p.note)}" data-k="note" data-id="${prod.id}" style="padding:6px 10px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--text);font:inherit;font-size:.85rem">
+      </div>
+    </article>`;
+  }).join("");
+  if (!shown) grid.innerHTML = `<p class="sub">這個分類目前沒有商品。</p>`;
+  document.getElementById("count").textContent = `顯示 ${shown} / ${PRODUCTS.length} 項`;
+  renderSummary();
+}
+
+function renderSummary() {
+  const { a, b } = state.names;
+  const groups = { both: [], onlyA: [], onlyB: [], pending: [] };
+  PRODUCTS.forEach(prod => {
+    const p = pick(prod.id);
+    const line = `・${prod.name}${p.color ? `（${p.color}）` : ""} ×${p.qty}${p.note ? ` — ${p.note}` : ""}`;
+    if (p.a === "yes" && p.b === "yes") groups.both.push(line);
+    else if (p.a === "yes" && p.b !== "no") groups.onlyA.push(line + (p.b ? "" : `（等${b}）`));
+    else if (p.b === "yes" && p.a !== "no") groups.onlyB.push(line + (p.a ? "" : `（等${a}）`));
+    else if (p.a === "yes" || p.b === "yes") groups.pending.push(line + "（意見不同）");
+  });
+  const sec = (t, arr) => arr.length ? `${t}\n${arr.join("\n")}\n` : "";
+  const text = [
+    "【洞洞板配件挑選】",
+    sec("✅ 兩人都想要", groups.both),
+    sec(`💚 ${a} 想要`, groups.onlyA),
+    sec(`💜 ${b} 想要`, groups.onlyB),
+    sec("🤔 要再討論", groups.pending)
+  ].filter(Boolean).join("\n");
+  document.getElementById("summary").textContent =
+    text === "【洞洞板配件挑選】" ? "還沒有人點「想要」喔。" : text;
+}
+
+function toast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.classList.add("show");
+  clearTimeout(toast.timer); toast.timer = setTimeout(() => t.classList.remove("show"), 1800);
+}
+async function copy(text, msg) {
+  try { await navigator.clipboard.writeText(text); toast(msg); }
+  catch (e) { prompt("請手動複製：", text); }
+}
+
+document.addEventListener("click", e => {
+  const vote = e.target.closest(".vote");
+  if (vote) {
+    const p = pick(vote.dataset.id), who = vote.dataset.who;
+    p[who] = p[who] === "" ? "yes" : p[who] === "yes" ? "no" : "";
+    save(); render(); return;
+  }
+  const z = e.target.closest("[data-zoom]");
+  if (z) {
+    const lb = document.getElementById("lightbox");
+    lb.querySelector("img").src = z.dataset.zoom; lb.classList.add("open"); return;
+  }
+  if (e.target.closest("#lightbox")) { document.getElementById("lightbox").classList.remove("open"); return; }
+  const chip = e.target.closest(".chip");
+  if (chip) {
+    filter = chip.dataset.filter;
+    document.querySelectorAll(".chip").forEach(c => c.setAttribute("aria-pressed", c === chip));
+    render();
+  }
+});
+document.addEventListener("change", e => {
+  const el = e.target;
+  if (!el.dataset.k) return;
+  const p = pick(el.dataset.id);
+  p[el.dataset.k] = el.dataset.k === "qty" ? Math.max(1, parseInt(el.value, 10) || 1) : el.value;
+  save(); renderSummary();
+});
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") document.getElementById("lightbox").classList.remove("open");
+});
+["a", "b"].forEach(w => {
+  const input = document.getElementById("name" + w.toUpperCase());
+  input.addEventListener("input", () => {
+    state.names[w] = input.value.trim() || (w === "a" ? "我" : "同居者");
+    save(); render();
+  });
+});
+document.getElementById("copyText").onclick = () =>
+  copy(document.getElementById("summary").textContent, "清單已複製");
+document.getElementById("copyLink").onclick = () =>
+  copy(location.href.split("#")[0] + "#" + encodeState(), "分享連結已複製");
+document.getElementById("reset").onclick = () => {
+  if (!confirm("確定要清除兩個人的所有選擇嗎？")) return;
+  state.picks = {}; save(); render();
+};
+
+load();
+document.getElementById("nameA").value = state.names.a;
+document.getElementById("nameB").value = state.names.b;
+render();
+</script>
+</body>
+</html>
